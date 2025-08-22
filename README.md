@@ -2,7 +2,7 @@
 # LP Score v4 — Validation & Stress-Test
 
 ## Contents
-- `LP_Score_v4_Validation_Report.rtfd` — 2–3 page visual report with figures and key findings
+- `LP_Score_v4_Validation_Report.html` — 2–3 page visual report with figures and key findings
 - `lp_score_v4_analysis.py` — Reproducible Python script to regenerate outputs
 - `anomalies.csv` — Wallet/pool-level anomalies (wallet_id, pool_id, reason, metric, value, threshold)
 - `figures/` — PNG figures used in the report
