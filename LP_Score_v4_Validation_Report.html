@@ -1,0 +1,49 @@
+
+<html><head><meta charset='utf-8'><title>LP Score v4 — Validation & Stress-Test</title></head>
+<body style="font-family: Arial, sans-serif; line-height:1.4; max-width:960px; margin:auto;">
+<h1>LP Score v4 — Validation & Stress-Test</h1>
+<p><strong>Dataset:</strong> 44975 wallets, 396 columns (raw) • Generated on 2025-08-22 17:36:34</p>
+
+<h2>Executive Summary (Top 10)</h2>
+<ol>
+<li>Aggregated score equals the sum of per-pool total_score for 40.6% of wallets; elsewhere an attenuation or normalization applies (mean delta agg−sum = -89.55, min -4069.12, max 122.25).</li><li>Category breakdown sum matches aggregated score for 40.6% of wallets; correlation is strong (r = 0.833) but not identity, implying category fields are partials with post-processing.</li><li>Per-pool component arithmetic is exact: score_breakdown.total_score equals the sum of its components for all slots checked (0 mismatches across all pools).</li><li>Deposit volume has weak association with aggregated score (r = 0.034); 22.1% of top-decile depositors have below-median aggregated scores.</li><li>Liquidity percent remaining is a major driver: wallets with ≥80% remaining have median aggregated score 512.00 vs 267.75 for ≤20%.</li><li>Dust behavior is penalized: highest decile of dust deposit counts has median aggregated score 246.04 vs 310.00 in the lowest.</li><li>Time factor works as expected: time_score decreases with staleness (corr days since last tx vs time_score = -0.217).</li><li>Volatility score shows weak/flat relation to lp_volatility_stddev (corr = -0.022); many bins plateau at ~150, suggesting caps or coarse bucketing.</li><li>Component attribution (top pool per wallet): liquidity_retention_score and time_score dominate proportional contributions; deposit_volume_score contributes less on average.</li><li>Detected 0 wallet–pool duplicate combinations and 31999 negative metric cells; anomalies CSV contains 562999 rows.</li>
+</ol>
+
+<h2>Construction Validity</h2>
+<ul>
+<li>Exact reconstructability from per-pool totals: <strong>40.6%</strong></li>
+<li>Delta (agg − sumPool): mean <strong>-89.55</strong>, min <strong>-4069.12</strong>, max <strong>122.25</strong></li>
+<li>Category sum vs aggregated: match rate <strong>40.6%</strong>, correlation <strong>0.833</strong></li>
+</ul>
+<img src="figures/fig2_agg_vs_sum.png" width="780" />
+
+<h2>Behavior–Score Alignment</h2>
+<img src="figures/fig3_cohort_deposit.png" width="780" />
+<img src="figures/fig4_retention_vs_score.png" width="780" />
+<img src="figures/fig5_time_vs_score.png" width="780" />
+<img src="figures/fig6_volatility_vs_score.png" width="780" />
+
+<h2>Component Attribution (Top Pool per Wallet)</h2>
+<img src="figures/fig7_component_means.png" width="780" />
+<img src="figures/fig8_component_props.png" width="780" />
+<pre>score_breakdown.avg_holding_time_score       0.230275
+score_breakdown.lp_volatility_score          0.230016
+score_breakdown.deposit_volume_score         0.220666
+score_breakdown.deposit_frequency_score      0.142971
+score_breakdown.withdraw_volume_score        0.087381
+score_breakdown.time_score                   0.044348
+score_breakdown.liquidity_retention_score    0.044343</pre>
+
+<h2>Anomalies & Outliers</h2>
+<p>See <code>anomalies.csv</code> for full list. Examples include: high deposits with high retention but below-median score; low deposits with top-decile score; stale activity with high time_score; duplicates; negative values; empty token symbols.</p>
+
+<h2>Plausible Aggregation Formula</h2>
+<p>Linear fit on all wallets yields α ≈ <strong>0.361</strong> and β ≈ <strong>161.43</strong> with R² ≈ <strong>0.403</strong>, indicating a downscaled sum plus offset model with additional caps/bucketization.</p>
+<p>The evidence suggests aggregated_lp_score is approximately a <em>nonlinear transform</em> of the sum of per-pool total_score with <em>downward attenuation</em> when wallets hold many pools or extreme component values. A simple linear sum explains only ~40.6% exactly, while the remainder are mostly lower than the sum (mean delta −89.6). Category fields are <em>partials</em> that correlate (r≈0.83) and often sum to the aggregated score, but diverge after a normalization step.</p>
+
+
+
+
+
+
+</body></html>
